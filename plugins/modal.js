@@ -6,12 +6,11 @@ function _createModal(options) {
     `<div class="modal-overlay">
       <div class="modal-window">
         <div class="modal-header">
-          <span class="modal-title">Modal title</span>
+          <span class="modal-title">${options.title}</span>
           <span class="modal-close">&times;</span>
         </div>
         <div class="modal-body">
-          <p>Lorem ipsum dolor sit amet.</p>
-          <p>Lorem ipsum dolor sit amet.</p>
+        ${options.content}
         </div>
         <div class="modal-footer">
           <button>Ok</button>
@@ -20,9 +19,11 @@ function _createModal(options) {
       </div>
     </div>`
   );
-  //   temp
+
   document.body.appendChild(modal);
-  //   end temp
+  //   ===================================
+  document.querySelector("modal-window").style.width = options.width;
+  //   ===================================
   return modal;
 }
 
