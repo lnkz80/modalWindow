@@ -21,9 +21,9 @@ function _createModal(options) {
   );
 
   document.body.appendChild(modal);
-  //   ===================================
-  document.querySelector("modal-window").style.width = options.width;
-  //   ===================================
+  document.getElementsByClassName("modal-window")[0].style.width =
+    options.width;
+
   return modal;
 }
 
