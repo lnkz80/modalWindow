@@ -21,8 +21,7 @@ function _createModal(options) {
   );
 
   document.body.appendChild(modal);
-  document.getElementsByClassName("modal-window")[0].style.width =
-    options.width;
+  document.querySelector(".modal-window").style.width = options.width;
 
   return modal;
 }
@@ -32,10 +31,27 @@ $.modal = function (options) {
   const $modal = _createModal(options);
   let closing = false;
 
+  function listen(listener, event) {
+    listener.addEventListener(event, () => close());
+  }
+
   const modalBtns = $modal.querySelectorAll("button");
   for (let btnItem of modalBtns) {
-    console.log(btnItem.type);
+    // console.log(btnItem.type);
+    // listen(btnItem);
+
+    listen(btnItem, "click");
   }
+
+  close = () => {
+    closing = true;
+    $modal.classList.remove("open");
+    $modal.classList.add("hide");
+    setTimeout(() => {
+      $modal.classList.remove("hide");
+      closing = false;
+    }, ANIMATION_SPEED);
+  };
 
   return {
     test() {
@@ -44,15 +60,7 @@ $.modal = function (options) {
     open() {
       !closing && $modal.classList.add("open");
     },
-    close() {
-      closing = true;
-      $modal.classList.remove("open");
-      $modal.classList.add("hide");
-      setTimeout(() => {
-        $modal.classList.remove("hide");
-        closing = false;
-      }, ANIMATION_SPEED);
-    },
+
     destroy() {
       delete $modal;
     },
