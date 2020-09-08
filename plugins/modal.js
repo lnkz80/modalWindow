@@ -13,8 +13,8 @@ function _createModal(options) {
         ${options.content}
         </div>
         <div class="modal-footer">
-          <button>Ok</button>
-          <button>Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm">Ok</button>
+          <button type="button" class="btn btn-secondary btn-sm">Cancel</button>
         </div>
       </div>
     </div>`
@@ -31,7 +31,16 @@ $.modal = function (options) {
   const ANIMATION_SPEED = 200;
   const $modal = _createModal(options);
   let closing = false;
+
+  const modalBtns = $modal.querySelectorAll("button");
+  for (let btnItem of modalBtns) {
+    console.log(btnItem.type);
+  }
+
   return {
+    test() {
+      console.log($modal);
+    },
     open() {
       !closing && $modal.classList.add("open");
     },
@@ -44,6 +53,8 @@ $.modal = function (options) {
         closing = false;
       }, ANIMATION_SPEED);
     },
-    destroy() {},
+    destroy() {
+      delete $modal;
+    },
   };
 };
