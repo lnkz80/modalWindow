@@ -1,17 +1,24 @@
 function _createModal(options) {
-  const modal = document.createElement('div');
-  modal.classList.add('vmodal');
-  options.closable ? (spanClose = `<span class="modal-close">&times;</span>`) : (spanClose = '');
+  const DEFAULT_WIDTH = "600px";
+  const modal = document.createElement("div");
+  modal.classList.add("vmodal");
+
   modal.insertAdjacentHTML(
-    'afterbegin',
-    `<div class="modal-overlay">
-      <div class="modal-window">
+    "afterbegin",
+    `<div class="modal-overlay" data-close="true">
+      <div class="modal-window" style="width: ${
+        options.width || DEFAULT_WIDTH
+      }">
         <div class="modal-header">
-          <span class="modal-title">${options.title}</span>
-          ${spanClose}
+          <span class="modal-title">${options.title || "Window"}</span>
+          ${
+            options.closable
+              ? `<span class="modal-close" data-close="true">&times;</span>`
+              : ""
+          }
         </div>
-        <div class="modal-body">
-        ${options.content}
+        <div class="modal-body" data-content>
+        ${options.content || ""}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary btn-sm confirm">Ok</button>
@@ -20,10 +27,7 @@ function _createModal(options) {
       </div>
     </div>`
   );
-
   document.body.appendChild(modal);
-  document.querySelector('.modal-window').style.width = options.width;
-
   return modal;
 }
 
@@ -31,50 +35,48 @@ $.modal = function (options) {
   const ANIMATION_SPEED = 200;
   const $modal = _createModal(options);
   let closing = false;
+  let destroyed = false;
 
-  function open() {
-    !closing && $modal.classList.add('open');
-  }
-  function close() {
-    closing = true;
-    $modal.classList.remove('open');
-    $modal.classList.add('hide');
-    setTimeout(() => {
-      $modal.classList.remove('hide');
-      closing = false;
-    }, ANIMATION_SPEED);
-  }
-
-  // morebtn
-  const morebtn = document.querySelector('button.moreinfo');
-  morebtn.addEventListener('click', open);
-
-  // modalbtns
-  if (options.closable) {
-    const modalClose = $modal.querySelector('span.modal-close');
-    modalClose.addEventListener('click', close);
-  }
-
-  const modalOverlay = $modal.querySelector('div.modal-overlay');
-  modalOverlay.addEventListener('click', close);
-
-  const modalConfirm = $modal.querySelector('button.confirm');
-  modalConfirm.addEventListener('click', close);
-
-  const modalReject = $modal.querySelector('button.reject');
-  modalReject.addEventListener('click', close);
-
-  // const modalBtns = $modal.querySelectorAll('button');
-  // for (let btnItem of modalBtns) {
-  //   btnItem.addEventListener('click', close);
-  // }
-
-  return {
-    test() {
-      console.log($modal);
+  const modal = {
+    open() {
+      if (destroyed) {
+        return;
+      }
+      !closing && $modal.classList.add("open");
     },
-    destroy() {
-      delete $modal;
+    close() {
+      closing = true;
+      $modal.classList.remove("open");
+      $modal.classList.add("hide");
+      setTimeout(() => {
+        $modal.classList.remove("hide");
+        closing = false;
+      }, ANIMATION_SPEED);
     },
   };
+
+  // morebtn
+  // const morebtn = document.querySelector("button.moreinfo");
+  // morebtn.addEventListener("click", modal.open);
+
+  // modalbtns
+
+  const listener = (event) => {
+    // console.log(event.target.dataset.close);
+    if (event.target.dataset.close) {
+      modal.close();
+    }
+  };
+  $modal.addEventListener("click", listener);
+
+  return Object.assign(modal, {
+    destroy() {
+      $modal.parentNode.removeChild($modal);
+      $modal.removeEventListener("click", listener);
+      destroyed = true;
+    },
+    setContent(html) {
+      $modal.querySelector("[data-content]").innerHTML = html;
+    },
+  });
 };
