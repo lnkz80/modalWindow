@@ -1,3 +1,35 @@
+Element.prototype.appendAfter = function (element) {
+  element.parentNode.insertBefore(this, element.nextSibling);
+};
+
+function noop() {}
+
+function _createModalFooter(buttons = []) {
+  if (buttons.length === 0) {
+    return document.createElement("div");
+  }
+
+  const wrap = document.createElement("div");
+  wrap.classList.add("modal-footer");
+
+  buttons.forEach((btn) => {
+    const $btn = document.createElement("button");
+    $btn.textContent = btn.text;
+    $btn.classList.add("btn");
+    $btn.classList.add(`btn-${btn.style || "secondary"}`);
+    $btn.classList.add(`btn-${btn.size || "sm"}`);
+    $btn.onclick = btn.handler || noop;
+    wrap.appendChild($btn);
+  });
+
+  return wrap;
+}
+
+/* <div class="modal-footer" data-footer>
+        <button type="button" class="btn btn-primary btn-sm confirm">Ok</button>
+        <button type="button" class="btn btn-secondary btn-sm reject">Cancel</button>        
+        </div> */
+
 function _createModal(options) {
   const DEFAULT_WIDTH = "600px";
   const modal = document.createElement("div");
@@ -20,15 +52,17 @@ function _createModal(options) {
         <div class="modal-body" data-content>
         ${options.content || ""}
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary btn-sm confirm">Ok</button>
-          <button type="button" class="btn btn-secondary btn-sm reject">Cancel</button>
-        </div>
+        
       </div>
     </div>`
   );
+  const footer = _createModalFooter(options.buttons);
+  footer.appendAfter(modal.querySelector("[data-content]"));
   document.body.appendChild(modal);
   return modal;
+}
+
+{
 }
 
 $.modal = function (options) {
@@ -56,8 +90,7 @@ $.modal = function (options) {
   };
 
   // morebtn
-  // const morebtn = document.querySelector("button.moreinfo");
-  // morebtn.addEventListener("click", modal.open);
+  document.querySelector("[data-open]").addEventListener("click", modal.open);
 
   // modalbtns
 
