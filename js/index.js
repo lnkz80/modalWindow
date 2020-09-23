@@ -1,21 +1,22 @@
 const modal = $.modal({
-  title: 'Hello! This is modal window',
+  title: "Hello! This is modal window",
   closable: true,
-  content: '<p>Lorem ipsum dolor sit amet.</p><p>Lorem ipsum dolor sit amet.</p>',
-  width: '400px',
+  content:
+    "<p>Lorem ipsum dolor sit amet.</p><p>Lorem ipsum dolor sit amet.</p>",
+  width: "400px",
   buttons: [
     {
-      text: 'Ok',
-      style: 'primary',
-      size: 'sm',
+      text: "Ok",
+      style: "primary",
+      size: "sm",
       handler() {
         modal.close();
       },
     },
     {
-      text: 'Cancel',
-      style: 'secondary',
-      size: 'sm',
+      text: "Cancel",
+      style: "secondary",
+      size: "sm",
       handler() {
         modal.close();
       },
@@ -25,24 +26,24 @@ const modal = $.modal({
 
 const cards = [
   {
-    imgsrc: 'img/maserati.png',
-    title: 'Maserati',
+    imgsrc: "img/maserati.png",
+    title: "Maserati",
     text:
-      'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur     quas, velit molestias quasi deserunt iste.',
+      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur     quas, velit molestias quasi deserunt iste.",
     price: 50000,
   },
   {
-    imgsrc: 'img/mustang.png',
-    title: 'Ford',
+    imgsrc: "img/mustang.png",
+    title: "Ford",
     text:
-      'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur     quas, velit molestias quasi deserunt iste.',
+      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur     quas, velit molestias quasi deserunt iste.",
     price: 40000,
   },
   {
-    imgsrc: 'img/porsche.png',
-    title: 'Porche',
+    imgsrc: "img/porsche.png",
+    title: "Porche",
     text:
-      'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur     quas, velit molestias quasi deserunt iste.',
+      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur     quas, velit molestias quasi deserunt iste.",
     price: 90000,
   },
 ];
@@ -54,19 +55,32 @@ function cardsHTML(img, title, text) {
     <h5 class="card-title">${title}</h5>
     <p class="card-text">${text}</p>
     <div class="d-flex justify-content-center">
-    <a href="/" class="btn btn-sm btn-primary" data-price>See price</a>&nbsp;
-    <a href="/" class="btn btn-sm btn-danger" data-delete>Delete</a>
+    <button class="btn btn-sm btn-primary" data-price="true">See price</button>&nbsp;
+    <button class="btn btn-sm btn-danger" data-delete>Delete</button>
     </div>
   </div>
 </div>`;
   return html;
 }
 
-let crd = '';
+let crd = "";
 cards.forEach((card) => {
   crd += cardsHTML(card.imgsrc, card.title, card.text);
 });
-document.querySelector('.container').insertAdjacentHTML('afterbegin', `<div class="card-deck">${crd}</div>`);
+document
+  .querySelector(".container")
+  .insertAdjacentHTML("afterbegin", `<div class="card-deck">${crd}</div>`);
+
+//eventListeners
+const btnListener = (event) => {
+  // console.log(event.target.dataset.close);
+  if (event.target.dataset.price) {
+    //call to modalWindow plugin
+    modal.open();
+  }
+};
+$cardDeck = document.querySelector(".card-deck");
+$cardDeck.addEventListener("click", btnListener);
 
 // let cardsHTML = ``;
 
