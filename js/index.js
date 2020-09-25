@@ -59,7 +59,7 @@ function cardsHTML(id, img, title, text) {
     <p class="card-text">${text}</p>
     <div class="d-flex justify-content-center">
     <button class="btn btn-sm btn-primary" data-price="true" data-id="${id}">See price</button>&nbsp;
-    <button class="btn btn-sm btn-danger" data-delete>Delete</button>
+    <button class="btn btn-sm btn-danger" data-delete="true">Delete</button>
     </div>
   </div>
 </div>`;
@@ -78,9 +78,8 @@ document
 //eventListeners
 const btnListener = (event) => {
   // console.log(event.target.dataset.close);
+  const id = event.target.dataset.id;
   if (event.target.dataset.price) {
-    //call to modalWindow plugin
-    const id = event.target.dataset.id;
     const cardModal = $.modal({
       title: "The price of " + cards[id].title + " is:",
       closable: true,
@@ -99,6 +98,9 @@ const btnListener = (event) => {
     });
     cardModal.open();
     // console.log(event.target.dataset.id);
+  }
+  if (event.target.dataset.delete) {
+    // console.log(event.target);
   }
 };
 $cardDeck = document.querySelector(".card-deck");
