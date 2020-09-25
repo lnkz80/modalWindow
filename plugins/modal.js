@@ -89,9 +89,6 @@ $.modal = function (options) {
     },
   };
 
-  // morebtn
-  document.querySelector("[data-open]").addEventListener("click", modal.open);
-
   // modalbtns
 
   const listener = (event) => {

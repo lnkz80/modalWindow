@@ -26,6 +26,7 @@ const modal = $.modal({
 
 const cards = [
   {
+    id: 0,
     imgsrc: "img/maserati.png",
     title: "Maserati",
     text:
@@ -33,6 +34,7 @@ const cards = [
     price: 50000,
   },
   {
+    id: 1,
     imgsrc: "img/mustang.png",
     title: "Ford",
     text:
@@ -40,6 +42,7 @@ const cards = [
     price: 40000,
   },
   {
+    id: 2,
     imgsrc: "img/porsche.png",
     title: "Porche",
     text:
@@ -48,14 +51,14 @@ const cards = [
   },
 ];
 
-function cardsHTML(img, title, text) {
+function cardsHTML(id, img, title, text) {
   html = `<div class="card" style="width: 18rem;">
   <img class="card-img-top" src="${img}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">${title}</h5>
     <p class="card-text">${text}</p>
     <div class="d-flex justify-content-center">
-    <button class="btn btn-sm btn-primary" data-price="true">See price</button>&nbsp;
+    <button class="btn btn-sm btn-primary" data-price="true" data-id="${id}">See price</button>&nbsp;
     <button class="btn btn-sm btn-danger" data-delete>Delete</button>
     </div>
   </div>
@@ -64,8 +67,9 @@ function cardsHTML(img, title, text) {
 }
 
 let crd = "";
+
 cards.forEach((card) => {
-  crd += cardsHTML(card.imgsrc, card.title, card.text);
+  crd += cardsHTML(card.id, card.imgsrc, card.title, card.text);
 });
 document
   .querySelector(".container")
@@ -76,11 +80,32 @@ const btnListener = (event) => {
   // console.log(event.target.dataset.close);
   if (event.target.dataset.price) {
     //call to modalWindow plugin
-    modal.open();
+    const id = event.target.dataset.id;
+    const cardModal = $.modal({
+      title: "The price of " + cards[id].title + " is:",
+      closable: true,
+      content: `<h4>${cards[id].price}</h4>`,
+      width: "300px",
+      buttons: [
+        {
+          text: "Buy it!",
+          style: "primary",
+          size: "sm",
+          handler() {
+            cardModal.close();
+          },
+        },
+      ],
+    });
+    cardModal.open();
+    // console.log(event.target.dataset.id);
   }
 };
 $cardDeck = document.querySelector(".card-deck");
 $cardDeck.addEventListener("click", btnListener);
+
+// morebtn
+document.querySelector("[data-open]").addEventListener("click", modal.open);
 
 // let cardsHTML = ``;
 
