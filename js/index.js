@@ -52,22 +52,22 @@ const cards = [
 ];
 
 function cardsHTML(id, img, title, text) {
-  html = `<div class="card" style="width: 18rem;">
+  const html = `<div class="card" style="width: 18rem;" data-ttt="${id}">
   <img class="card-img-top" src="${img}" alt="Card image cap">
   <div class="card-body">
     <h5 class="card-title">${title}</h5>
     <p class="card-text">${text}</p>
-    <div class="d-flex justify-content-center">
-    <button class="btn btn-sm btn-primary" data-price="true" data-id="${id}">See price</button>&nbsp;
-    <button class="btn btn-sm btn-danger" data-delete="true">Delete</button>
+    <div class="d-flex justify-content-center" data-id="${id}">
+      <button class="btn btn-sm btn-primary" data-price="true">See price</button>&nbsp;
+      <button class="btn btn-sm btn-danger" data-delete="true" id="qaz">Delete</button>
     </div>
   </div>
 </div>`;
   return html;
 }
 
+//massive of cards
 let crd = "";
-
 cards.forEach((card) => {
   crd += cardsHTML(card.id, card.imgsrc, card.title, card.text);
 });
@@ -75,12 +75,21 @@ document
   .querySelector(".container")
   .insertAdjacentHTML("afterbegin", `<div class="card-deck">${crd}</div>`);
 
+function searchParentNode(elem, targetClass = "card") {
+  // uplvl = elem.parentElement;
+  while (elem.className != targetClass) {
+    elem = elem.parentElement;
+  }
+  return elem;
+}
+
 //eventListeners
 const btnListener = (event) => {
   // console.log(event.target.dataset.close);
-  const id = event.target.dataset.id;
+  const id = event.target.parentElement.dataset.id;
+
   if (event.target.dataset.price) {
-    const cardModal = $.modal({
+    const cardModalPrice = $.modal({
       title: "The price of " + cards[id].title + " is:",
       closable: true,
       content: `<h4>${cards[id].price}</h4>`,
@@ -91,16 +100,48 @@ const btnListener = (event) => {
           style: "primary",
           size: "sm",
           handler() {
-            cardModal.close();
+            cardModalPrice.close();
           },
         },
       ],
     });
-    cardModal.open();
-    // console.log(event.target.dataset.id);
+    cardModalPrice.open();
   }
   if (event.target.dataset.delete) {
-    // console.log(event.target);
+    const cardModalDelete = $.modal({
+      title: "Deleting of card",
+      closable: true,
+      content: `Do you want to DELETE a card with name "${cards[id].title}"?`,
+      width: "300px",
+      buttons: [
+        {
+          text: "Delete",
+          style: "primary",
+          size: "sm",
+          handler() {
+            const nodeToDelete = searchParentNode(event.target);
+            cardModalDelete.close();
+            nodeToDelete.classList.add("animate");
+            nodeToDelete.onanimationend = (e) => {
+              if (e.srcElement.classList.contains("animate")) {
+                nodeToDelete.parentNode.removeChild(nodeToDelete);
+                cardModalDelete.destroy();
+              }
+            };
+            // nodeToDelete.remove();
+          },
+        },
+        {
+          text: "Cancel",
+          style: "secondary",
+          size: "sm",
+          handler() {
+            cardModalDelete.close();
+          },
+        },
+      ],
+    });
+    cardModalDelete.open();
   }
 };
 $cardDeck = document.querySelector(".card-deck");
