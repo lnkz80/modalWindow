@@ -1,3 +1,12 @@
+/* MINE CSS */
+.container {
+  margin-top: 50px;
+}
+
+.container p {
+  text-align: justify;
+}
+
 .animate {
   animation: fade 1s;
   -webkit-animation: fade 1s;
